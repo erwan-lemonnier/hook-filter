@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 02_test_import_params.t,v 1.1 2007-05-16 08:26:44 erwan_lemonnier Exp $
+#   $Id: 02_test_import_params.t,v 1.2 2007-05-16 13:32:22 erwan_lemonnier Exp $
 #
 #   @author       erwan lemonnier
 #   @description  test that Hook::Filter properly checks its import parameters
@@ -13,6 +13,7 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Test::More;
+use lib "../lib/";
 
 #
 # inspired by Test::More's use_ok

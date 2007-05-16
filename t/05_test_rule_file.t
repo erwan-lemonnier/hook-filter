@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 05_test_rule_file.t,v 1.1 2007-05-16 08:26:45 erwan_lemonnier Exp $
+#   $Id: 05_test_rule_file.t,v 1.2 2007-05-16 13:32:22 erwan_lemonnier Exp $
 #
 #   @author       erwan lemonnier
 #   @description  test using a rule file with Hook::Filter
@@ -19,6 +19,7 @@ package MyTest;
 
 use strict;
 use warnings;
+use lib "../";
 use Hook::Filter;
 
 sub mylog1 { return 1; };
@@ -31,6 +32,7 @@ package MyTest::Child;
 
 use strict;
 use warnings;
+use lib "../";
 use Hook::Filter;
 
 sub mylog1 { return 1; };
@@ -49,6 +51,7 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Test::More;
+use lib "../";
 
 sub mylog1 { return 1; };
 sub mylog2 { return 1; };
@@ -76,7 +79,7 @@ BEGIN {
     `echo " # yet an other commentar" >> $rule_file`;
     `echo "is_sub(qr{mylog3\$})" >> $rule_file`;
     `echo "is_sub(qr{Child.*[23]\$})" >> $rule_file`;
-    
+
     use_ok('Hook::Filter','rules',$rule_file,'hook',['mylog1','mylog2','mylog3']);
 }
 

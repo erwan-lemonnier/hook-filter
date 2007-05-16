@@ -1,7 +1,7 @@
 #!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 03_test_hook_filter_rule.t,v 1.1 2007-05-16 08:26:45 erwan_lemonnier Exp $
+#   $Id: 03_test_hook_filter_rule.t,v 1.2 2007-05-16 13:32:22 erwan_lemonnier Exp $
 #
 #   @author       erwan lemonnier
 #   @description  test Hook::Filter::Rule
@@ -13,6 +13,7 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Test::More;
+use lib "../lib/";
 
 BEGIN {
     eval "use Module::Pluggable"; plan skip_all => "Module::Pluggable required for testing Hook::Filter" if $@;

@@ -1,8 +1,9 @@
 Changes
 lib/Hook/Filter.pm
-lib/Hook/Filter/Hook.pm
-lib/Hook/Filter/Plugins/Location.pm
+lib/Hook/Filter/Hooker.pm
+lib/Hook/Filter/Plugins/CallStack.pm
 lib/Hook/Filter/Rule.pm
+lib/Hook/Filter/RulePool.pm
 Makefile.PL
 MANIFEST
 META.yml

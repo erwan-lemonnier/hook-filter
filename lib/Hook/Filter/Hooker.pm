@@ -2,7 +2,7 @@
 #
 #   Hook::Filter::Hooker - Wrap subroutines in a firewalling closure
 #
-#   $Id: Hooker.pm,v 1.1 2007-05-16 12:35:05 erwan_lemonnier Exp $
+#   $Id: Hooker.pm,v 1.2 2007-05-16 13:31:36 erwan_lemonnier Exp $
 #
 #   060302 erwan Created
 #   070516 erwan Use the rule pool
@@ -16,7 +16,7 @@ use Carp qw(croak);
 use Data::Dumper;
 use Symbol;
 use base qw(Exporter);
-use Hook::Filter::RulePool;
+use Hook::Filter::RulePool qw(get_rule_pool);
 
 our @EXPORT = qw( get_caller_package
 		  get_caller_file
@@ -32,7 +32,7 @@ use vars qw( $CALLER_PACKAGE
 	     $SUBNAME
 	     @ARGUMENTS );
 
-my $pool = Hook::Filter::RulePool::get_pool();
+my $pool = get_rule_pool();
 
 #----------------------------------------------------------------
 #
@@ -243,7 +243,7 @@ See Hook::Filter, Hook::Filter::Rule, modules under Hook::Filter::Plugins.
 
 =head1 VERSION
 
-$Id: Hooker.pm,v 1.1 2007-05-16 12:35:05 erwan_lemonnier Exp $
+$Id: Hooker.pm,v 1.2 2007-05-16 13:31:36 erwan_lemonnier Exp $
 
 =head1 AUTHOR
 
