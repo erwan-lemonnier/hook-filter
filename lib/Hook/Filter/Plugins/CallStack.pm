@@ -1,22 +1,20 @@
 #################################################################
 #
-#   Call::Filter::Plugin::Location - Functions for testing a subroutine location
+#   Hook::Filter::Plugin::CallStack - Functions for testing a subroutine's call stack
 #
-#   $Id: Location.pm,v 1.1 2007-05-16 08:26:44 erwan_lemonnier Exp $
+#   $Id: CallStack.pm,v 1.1 2007-05-16 12:34:12 erwan_lemonnier Exp $
 #
 #   060302 erwan Created
+#   070516 erwan Renamed into CallStack + added from
 #
 
-package Hook::Filter::Plugins::Location;
+package Hook::Filter::Plugins::CallStack;
 
-use 5.006;
 use strict;
 use warnings;
 use Carp qw(croak);
 use Data::Dumper;
-use Hook::Filter::Hook;
-
-our $VERSION = '0.01';
+use Hook::Filter::Hooker;
 
 #----------------------------------------------------------------
 #
@@ -24,11 +22,20 @@ our $VERSION = '0.01';
 #
 
 sub register {
-    return qw(from_pkg from_sub is_sub);
+    return qw(from from_pkg from_sub is_sub);
 }
 
 #----------------------------------------------------------------
-# 
+#
+#   from - returns the fully qualified name of the caller
+#
+
+sub from {
+    return get_caller_package."::".get_caller_subname;
+}
+
+#----------------------------------------------------------------
+#
 #   _match_or_die - generic match function used by all test functions in here
 #
 
@@ -38,14 +45,14 @@ sub _match_or_die {
     if (!defined $func || !defined $value || !defined $match || scalar @_ != 3) {
 	die "BUG: got wrong arguments in _match_or_die. ".Dumper(@_);
     }
-    
-    if (ref \$match eq 'SCALAR') {	
+
+    if (ref \$match eq 'SCALAR') {
 	return $value eq $match;
     } elsif (ref $match eq 'Regexp') {
 	return $value =~ $match;
     } else {
 	die "$func: invalid argument, should be a scalar or a regexp.\n";
-    }    
+    }
 }
 
 #----------------------------------------------------------------
@@ -81,16 +88,12 @@ __END__
 
 =head1 NAME
 
-Hook::Filter::Plugin::Location - Functions for testing the location of a filtered subroutine
-
-=head1 VERSION
-
-$Id: Location.pm,v 1.1 2007-05-16 08:26:44 erwan_lemonnier Exp $
+Hook::Filter::Plugin::CallStack - Functions for testing a subroutine's call stack
 
 =head1 DESCRIPTION
 
-Hook::Filter::Plugin::Location is a library of functions testing various
-aspects of a subroutine's location. Those functions can be used inside
+A library of functions testing various
+aspects of a subroutine's call stack. Those functions should be used inside
 Hook::Filter rules, and only there.
 
 =head1 SYNOPSIS
@@ -98,6 +101,9 @@ Hook::Filter rules, and only there.
 Exemples of rules using test functions from Hook::Filter::Plugin::Location:
 
     # allow all subroutine calls made from inside function 'do_this' from package 'main'
+    from =~ /main::do:this/
+
+    # same as above
     from_sub('main::do_this')
 
     # allow all subroutine calls made from inside a function whose complete name matches /^Test::log.*/
@@ -117,7 +123,7 @@ Exemples of rules using test functions from Hook::Filter::Plugin::Location:
 
 =head1 INTERFACE - PLUGIN STRUCTURE
 
-Like all plugin modules under Hook::Filter::Plugins, Hook::Filter::Plugins::Location
+Like all plugin modules under Hook::Filter::Plugins, Hook::Filter::Plugins::CallStack
 implements the class method C<< register() >>:
 
 =over 4
@@ -131,31 +137,33 @@ by internally by Hook::Filter::Rule.
 
 =head1 INTERFACE - TEST FUNCTIONS
 
-The following functions are only exported into Hook::Filter::Rule and 
+The following functions are only exported into Hook::Filter::Rule and
 shall only be used inside filter rules.
-In the following, a complete subroutine name refers to the name
-of that subroutine preceded by its package name and '::'.
 
 =over 4
 
+=item B<from>
+
+Return the fully qualified name of the caller of the filtered subroutine.
+
 =item B<is_sub>(I<$scalar>)
 
-Return true if the complete name of the currently filtered subroutine, for whom the rule 
+Return true if the fully qualified name of the currently filtered subroutine, for whom the rule
 containing C<< is_sub >> is being eval-ed, equals I<$scalar>. Return false otherwise.
 
 =item B<is_sub>(I<$regexp>)
 
-Return true if the complete name of the currently filtered subroutine, for whom the rule 
+Return true if the fully qualified name of the currently filtered subroutine, for whom the rule
 containing C<< is_sub >> is being eval-ed, matches I<$regexp>. Return false otherwise.
 
 =item B<from_sub>(I<$scalar>)
 
-Return true if the complete name of the subroutine that called the currently filtered
+Return true if the fully qualified name of the subroutine that called the currently filtered
 subroutine equals I<$scalar>. Return false otherwise.
 
 =item B<from_sub>(I<$regexp>)
 
-Return true if the complete name of the subroutine that called the currently filtered
+Return true if the fully qualified name of the subroutine that called the currently filtered
 subroutine matches I<$regexp>. Return false otherwise.
 
 =item B<from_pkg>(I<$scalar>)
@@ -180,17 +188,17 @@ See Hook::Filter
 
 =head1 SEE ALSO
 
-See Hook::Filter, Hook::Filter::Rule, Hook::Filter::Hook.
+See Hook::Filter, Hook::Filter::Rule, Hook::Filter::Hooker.
+
+=head1 VERSION
+
+$Id: CallStack.pm,v 1.1 2007-05-16 12:34:12 erwan_lemonnier Exp $
 
 =head1 AUTHOR
 
 Erwan Lemonnier C<< <erwan@cpan.org> >>.
 
-=head1 COPYRIGHT AND LICENSE
-
-See Hook::Filter.
-
-=head1 DISCLAIMER OF WARRANTY
+=head1 LICENSE
 
 See Hook::Filter.
 
