@@ -1,12 +1,8 @@
-#!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 05_test_rule_file.t,v 1.2 2007-05-16 13:32:22 erwan_lemonnier Exp $
+#   $Id: 05_test_rule_file.t,v 1.3 2007-05-16 14:09:09 erwan_lemonnier Exp $
 #
-#   @author       erwan lemonnier
-#   @description  test using a rule file with Hook::Filter
-#   @system       pluto
-#   @function     base
+#   test using a rule file with Hook::Filter
 #
 
 #
@@ -19,7 +15,7 @@ package MyTest;
 
 use strict;
 use warnings;
-use lib "../";
+use lib "../lib/";
 use Hook::Filter;
 
 sub mylog1 { return 1; };
@@ -32,7 +28,7 @@ package MyTest::Child;
 
 use strict;
 use warnings;
-use lib "../";
+use lib "../lib/";
 use Hook::Filter;
 
 sub mylog1 { return 1; };
@@ -51,7 +47,7 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Test::More;
-use lib "../";
+use lib "../lib/";
 
 sub mylog1 { return 1; };
 sub mylog2 { return 1; };

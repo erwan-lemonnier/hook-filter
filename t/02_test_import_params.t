@@ -1,12 +1,8 @@
-#!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 02_test_import_params.t,v 1.2 2007-05-16 13:32:22 erwan_lemonnier Exp $
+#   $Id: 02_test_import_params.t,v 1.3 2007-05-16 14:09:09 erwan_lemonnier Exp $
 #
-#   @author       erwan lemonnier
-#   @description  test that Hook::Filter properly checks its import parameters
-#   @system       pluto
-#   @function     base
+#   test Hook:Filter's import parameters
 #
 
 use strict;
@@ -33,7 +29,7 @@ sub my_use_ok {
     eval <<TEST;
 package $pkg;
 use Hook::Filter \@imports;
-if ($flush) { 
+if ($flush) {
     Hook::Filter::_test_import_flush;
 }
 TEST
@@ -56,7 +52,7 @@ BEGIN {
     #
     # test 'rules_path'
     #
-    
+
     # rules_path undefined
     $err = my_use_ok(1,'rules',undef);
     ok($err =~ /invalid parameter:.*'rules'.*was undef/i,"use with 'rules' => undef");
@@ -83,7 +79,7 @@ BEGIN {
     # hook not scalar nor array
     $err = my_use_ok(1,'hook',{a=>1});
     ok($err =~ /invalid parameter:.*hook.*, but was/i,"use with hook neither scalar nor array");
-    
+
     # hook array of non scalar
     $err = my_use_ok(1,'hook',[{a=>1}]);
     ok($err =~ /invalid parameter:.*hook.*, but was/i,"use with hook array of non scalar");
@@ -91,11 +87,11 @@ BEGIN {
     # hook an array of scalar
     $err = my_use_ok(1,'hook',["sub1","sub2"]);
     ok($err eq "","use with hook a valid array of scalar");
-    
+
     # hook a scalar
     $err = my_use_ok(0,'hook',"sub3");
     ok($err eq "","use with hook a valid scalar [$err]");
-    
+
     # no params = ok
     $err = my_use_ok(0);
     ok($err eq "","use without parameters [$err]");

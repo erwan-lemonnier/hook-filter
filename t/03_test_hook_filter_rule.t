@@ -1,12 +1,8 @@
-#!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 03_test_hook_filter_rule.t,v 1.2 2007-05-16 13:32:22 erwan_lemonnier Exp $
+#   $Id: 03_test_hook_filter_rule.t,v 1.3 2007-05-16 14:09:09 erwan_lemonnier Exp $
 #
-#   @author       erwan lemonnier
-#   @description  test Hook::Filter::Rule
-#   @system       pluto
-#   @function     base
+#   test hook filter rules
 #
 
 use strict;

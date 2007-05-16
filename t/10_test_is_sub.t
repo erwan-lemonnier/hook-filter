@@ -1,12 +1,8 @@
-#!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 10_test_is_sub.t,v 1.2 2007-05-16 13:32:23 erwan_lemonnier Exp $
+#   $Id: 10_test_is_sub.t,v 1.3 2007-05-16 14:09:09 erwan_lemonnier Exp $
 #
-#   @author       erwan lemonnier
-#   @description  test is_sub from Hook::Filter
-#   @system       pluto
-#   @function     base
+#   test is_sub from Hook::Filter
 #
 
 package MyTest;
@@ -26,12 +22,12 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Test::More;
-use lib "../";
+use lib "../lib/";
 
 BEGIN {
     eval "use Module::Pluggable"; plan skip_all => "Module::Pluggable required for testing Hook::Filter" if $@;
     eval "use File::Spec"; plan skip_all => "File::Spec required for testing Hook::Filter" if $@;
-    plan tests => 14;
+    plan tests => 15;
 
     use_ok('Hook::Filter::Hooker');
     use_ok('Hook::Filter::Rule');

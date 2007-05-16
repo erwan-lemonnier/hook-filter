@@ -1,12 +1,8 @@
-#!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 11_test_from_sub.t,v 1.1 2007-05-16 08:26:45 erwan_lemonnier Exp $
+#   $Id: 11_test_from_sub.t,v 1.2 2007-05-16 14:09:09 erwan_lemonnier Exp $
 #
-#   @author       erwan lemonnier
-#   @description  test from_sub from Hook::Filter
-#   @system       pluto
-#   @function     base
+#   test from_sub from Hook::Filter
 #
 
 package MyTest;
@@ -27,17 +23,20 @@ use strict;
 use warnings;
 use Data::Dumper;
 use Test::More;
+use lib "../lib/";
 
 BEGIN {
     eval "use Module::Pluggable"; plan skip_all => "Module::Pluggable required for testing Hook::Filter" if $@;
     eval "use File::Spec"; plan skip_all => "File::Spec required for testing Hook::Filter" if $@;
     plan tests => 10;
 
-    use_ok('Hook::Filter::Hook');
+    use_ok('Hook::Filter::Hooker');
     use_ok('Hook::Filter::Rule');
+    use_ok('Hook::Filter::RulePool');
 }
 
-my($hook,$rule);
+my ($hook,$rule,$pool);
+$pool = Hook::Filter::RulePool::get_rule_pool();
 
 sub testsub1 { return 1; };
 sub testsub2 { return 1; };
@@ -48,9 +47,9 @@ sub mysub3 { return testsub2(); };
 sub mysub4 { return testsub2(); };
 
 # test match only function name
-$hook = Hook::Filter::Hook->new();
-$rule = Hook::Filter::Rule->new("from_sub('MyTest::mysub1');");
-$hook->register_rule($rule);
+$pool->add_rule("from_sub('MyTest::mysub1');");
+
+$hook = new Hook::Filter::Hooker;
 $hook->filter_sub('main::testsub1');
 $hook->filter_sub('MyTest::testsub1');
 
@@ -60,9 +59,10 @@ is(MyTest::mysub1,1,"MyTest::mysub1 does match string");
 is(MyTest::mysub2,undef,"MyTest::sub2 does not match string");
 
 # test match regexp
-$hook = Hook::Filter::Hook->new();
-$rule = Hook::Filter::Rule->new('from_sub(qr{sub3$})');
-$hook->register_rule($rule);
+$hook = Hook::Filter::Hooker->new();
+$pool->flush_rules;
+$pool->add_rule('from_sub(qr{sub3$})');
+
 $hook->filter_sub('main::testsub2');
 $hook->filter_sub('MyTest::testsub2');
 

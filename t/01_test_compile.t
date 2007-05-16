@@ -1,12 +1,8 @@
-#!/usr/local/bin/perl
 #################################################################
 #
-#   $Id: 01_test_compile.t,v 1.3 2007-05-16 12:35:51 erwan_lemonnier Exp $
+#   $Id: 01_test_compile.t,v 1.4 2007-05-16 14:09:09 erwan_lemonnier Exp $
 #
-#   @author       erwan lemonnier
-#   @description  test that all modules under Hook::Filter do compile
-#   @system       pluto
-#   @function     base
+#   test that all modules compile
 #
 
 use strict;
