@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 use lib "lib/";
-use Hook::Filter;
+require Hook::Filter;
 
 my $tag = "VERSION_".$Hook::Filter::VERSION;
 $tag =~ s/\.//;
