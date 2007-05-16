@@ -1,6 +1,6 @@
 #################################################################
 #
-#   $Id: 13_test_from.t,v 1.2 2007-05-16 14:36:51 erwan_lemonnier Exp $
+#   $Id: 13_test_from.t,v 1.3 2007-05-16 15:07:44 erwan_lemonnier Exp $
 #
 #   test from()
 #
@@ -23,7 +23,7 @@ use lib "../lib/";
 BEGIN {
     eval "use Module::Pluggable"; plan skip_all => "Module::Pluggable required for testing Hook::Filter" if $@;
     eval "use File::Spec"; plan skip_all => "File::Spec required for testing Hook::Filter" if $@;
-    plan tests => 7;
+    plan tests => 8;
 
     use_ok('Hook::Filter::Hooker','filter_sub');
     use_ok('Hook::Filter::Rule');
@@ -47,5 +47,10 @@ $pool->flush_rules;
 $pool->add_rule('from =~ /^main::mysub1$/');
 is(mysub1,1,                     "main::mysub1 does match");
 is(MyTest1::mysub1,undef,        "MyTest1::mysub1 does not match");
+
+# a direct call returns ''
+$pool->flush_rules;
+$pool->add_rule('from =~ /^$/');
+is(mytest1,1,                    "direct call => from = ''");
 
 
