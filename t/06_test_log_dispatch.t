@@ -1,6 +1,6 @@
 #################################################################
 #
-#   $Id: 06_test_log_dispatch.t,v 1.2 2007-05-16 14:09:09 erwan_lemonnier Exp $
+#   $Id: 06_test_log_dispatch.t,v 1.3 2007-05-16 15:44:21 erwan_lemonnier Exp $
 #
 #   test filtering Log::Dispatch with Hook::Filter
 #
@@ -53,7 +53,7 @@ BEGIN {
 
     `rm $rule_file` if (-e $rule_file);
     `touch $rule_file`;
-    `echo "!from_pkg('MyTest1')" >> $rule_file`;
+    `echo "from !~ /^MyTest1/" >> $rule_file`;
 
     use_ok('Hook::Filter', hook => ['Log::Dispatch::log','Log::Dispatch::log_to'], rules => $rule_file);
 }

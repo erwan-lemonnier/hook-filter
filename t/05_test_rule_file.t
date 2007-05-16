@@ -1,6 +1,6 @@
 #################################################################
 #
-#   $Id: 05_test_rule_file.t,v 1.3 2007-05-16 14:09:09 erwan_lemonnier Exp $
+#   $Id: 05_test_rule_file.t,v 1.4 2007-05-16 15:44:21 erwan_lemonnier Exp $
 #
 #   test using a rule file with Hook::Filter
 #
@@ -70,11 +70,11 @@ BEGIN {
     `echo "     # an other commentar" >> $rule_file`;
     `echo "     " >> $rule_file`;
     `echo "0" >> $rule_file`;
-    `echo "is_sub('MyTest::mylog1')" >> $rule_file`;
-    `echo "is_sub('main::mylog2')" >> $rule_file`;
+    `echo "subname eq 'MyTest::mylog1'" >> $rule_file`;
+    `echo "subname eq 'main::mylog2'" >> $rule_file`;
     `echo " # yet an other commentar" >> $rule_file`;
-    `echo "is_sub(qr{mylog3\$})" >> $rule_file`;
-    `echo "is_sub(qr{Child.*[23]\$})" >> $rule_file`;
+    `echo "subname =~ /mylog3\$/" >> $rule_file`;
+    `echo "subname =~ /Child.*[23]\$/" >> $rule_file`;
 
     use_ok('Hook::Filter','rules',$rule_file,'hook',['mylog1','mylog2','mylog3']);
 }

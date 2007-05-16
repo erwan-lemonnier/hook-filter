@@ -7,6 +7,9 @@ Revision history for Perl extension Hook::Filter
         - adding some tests
 
 0.03  2007-05-16
-        - moved repository to sourceforge
-        - adding from() and arg() in rules
+        - moved repository to sourceforge (https://sourceforge.net/projects/hook-filter)
+        - removed the tests from_pkg(), from_sub() and is_sub(), hence
+          breaking the backward compatibility of filtering rules
+        - added the tests from(), arg() and subname()
+        - allowed injection of new rules during runtime
         - updated POD
