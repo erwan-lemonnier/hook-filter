@@ -1,6 +1,6 @@
 #################################################################
 #
-#   $Id: 04_test_hook.t,v 1.3 2007-05-16 14:09:09 erwan_lemonnier Exp $
+#   $Id: 04_test_hook.t,v 1.4 2007-05-16 14:36:51 erwan_lemonnier Exp $
 #
 #   test Hook::Filter::Hooker
 #
@@ -14,7 +14,7 @@ package MyTest;
 use strict;
 use warnings;
 use lib "../lib/";
-use Hook::Filter::Hooker;
+use Hook::Filter::Hooker qw(get_caller_package get_caller_file get_caller_line get_caller_subname get_subname get_arguments);
 
 sub dobido_test {
     return (get_caller_package,get_caller_file,get_caller_line,get_caller_subname,get_subname,get_arguments);
@@ -43,7 +43,9 @@ BEGIN {
     eval "use File::Spec"; plan skip_all => "File::Spec required for testing Hook::Filter" if $@;
     plan tests => 33;
 
-    use_ok('Hook::Filter::Hooker');
+    use_ok('Hook::Filter::Hooker',
+	   'filter_sub',
+	   'get_caller_package','get_caller_file','get_caller_line','get_caller_subname','get_subname','get_arguments');
     use_ok('Hook::Filter::RulePool');
     use_ok('Hook::Filter::Rule');
 }
@@ -54,7 +56,6 @@ sub main_test {
 
 my $tmpfil = "/tmp/testfile_hook_filter";
 
-my $hook = new Hook::Filter::Hooker();
 my $pool = Hook::Filter::RulePool::get_rule_pool();
 
 my $rule = Hook::Filter::Rule->new("1;");
@@ -74,25 +75,25 @@ sub test {
 }
 
 # test argument checks for filter_sub
-eval { $hook->filter_sub([1,0])};
+eval { filter_sub([1,0])};
 ok(($@ =~ /filter_sub expects a subroutine name/i),"filter_sub with subroutine an array ref");
 
-eval { $hook->filter_sub({a=>1})};
+eval { filter_sub({a=>1})};
 ok(($@ =~ /filter_sub expects a subroutine name/i),"filter_sub with pkg a hash ref");
 
-eval { $hook->filter_sub("main","test","")};
+eval { filter_sub("main","test","")};
 ok(($@ =~ /filter_sub expects a subroutine name/i),"filter_sub with too many args");
 
-eval { $hook->filter_sub()};
+eval { filter_sub()};
 ok(($@ =~ /filter_sub expects a subroutine name/i),"filter_sub with too few args");
 
-eval { $hook->filter_sub("main")};
+eval { filter_sub("main")};
 ok(($@ =~ /is not a valid subroutine name/i),"filter_sub with invalid subroutine name");
 
-eval { $hook->filter_sub("main::bob"); };
+eval { filter_sub("main::bob"); };
 ok(!$@,"filter_sub with correct arg");
 
-$hook->filter_sub("main::test");
+filter_sub("main::test");
 
 # test filter when rules are true
 my $res1;
@@ -112,7 +113,7 @@ is_deeply(\@res2,['a','b','c',1,2],"test function result");
 # test filter when rules are false
 $pool->flush_rules;
 $pool->add_rule("0;");
-$hook->filter_sub("main::test");
+filter_sub("main::test");
 
 $TEST_RAN = 0;
 eval { $res1 = test('a','b','c'); };
@@ -129,16 +130,16 @@ is_deeply(\@res2,[],"test function result");
 # test that Hook::Filter::Hook sets its global variables right
 $pool->flush_rules;
 $pool->add_rule("1;");
-$hook->filter_sub("MyTest::dobido_test");
-$hook->filter_sub("main::main_test");
+filter_sub("MyTest::dobido_test");
+filter_sub("main::main_test");
 
 # ad once more, just to improve coverage :)
-$hook->filter_sub("main::main_test");
+filter_sub("main::main_test");
 
 my ($pkg,$file,$line,$subname,$myname,@args) = MyTest::dobido();
 is($pkg,"MyTest","checking caller package");
 ok($file =~ /04_test_hook.t$/,"checking caller file");
-is($line,28,"checking caller line");
+is($line,24,"checking caller line");
 is($subname,"MyTest::dobido","checking caller subname");
 is($myname,'MyTest::dobido_test',"checking own name");
 is_deeply(\@args,['ab','cd'],"checking own arguments");
@@ -146,7 +147,7 @@ is_deeply(\@args,['ab','cd'],"checking own arguments");
 ($pkg,$file,$line,$subname,$myname,@args) = main_test(1,2,3,4);
 is($pkg,"main","checking caller package");
 ok($file =~ /04_test_hook.t$/,"checking caller file");
-is($line,150,"checking caller line");
+is($line,147,"checking caller line");
 is($subname,"","checking caller subname");
 is($myname,'main::main_test',"checking own name");
 is_deeply(\@args,[1,2,3,4],"checking own arguments");

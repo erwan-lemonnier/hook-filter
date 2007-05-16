@@ -2,7 +2,7 @@
 #
 #   Hook::Filter - A runtime filtering layer on top of subroutine calls
 #
-#   $Id: Filter.pm,v 1.2 2007-05-16 13:32:22 erwan_lemonnier Exp $
+#   $Id: Filter.pm,v 1.3 2007-05-16 14:36:51 erwan_lemonnier Exp $
 #
 #   051105 erwan Created
 #   060301 erwan Recreated
@@ -16,9 +16,9 @@ use strict;
 use warnings;
 use Carp qw(confess croak);
 use File::Spec;
-use Hook::Filter::Hooker;
 use Hook::Filter::Rule;
 use Hook::Filter::RulePool qw(get_rule_pool);
+use Hook::Filter::Hooker qw(filter_sub);
 use base qw(Exporter);
 use Data::Dumper;
 
@@ -110,8 +110,6 @@ INIT {
     # initiate a rule pool and a hooker
     my $pool = get_rule_pool();
 
-    my $hooker = new Hook::Filter::Hooker();
-
     #----------------------------------------------------------------
     #
     #   find rules file
@@ -133,7 +131,7 @@ INIT {
     #   load rules from rules file, if any
     #
 
-    if (defined $RULES_FILE && !-f $RULES_FILE) {
+    if (defined $RULES_FILE && -f $RULES_FILE) {
 
 	# TODO: support runtime monitoring of rules file and update of rules upon changes in file
 
@@ -169,9 +167,9 @@ INIT {
 	foreach my $method (@{$HOOKED_SUBS{$pkg}}) {
 	    # if method is already a complete path, use it, hence modifying a method in an other module
 	    if ($method =~ /::/) {
-		$hooker->filter_sub($method);
+		filter_sub($method);
 	    } else {
-		$hooker->filter_sub($pkg."::".$method);
+		filter_sub($pkg."::".$method);
 	    }
 	}
     }

@@ -2,7 +2,7 @@
 #
 #   Hook::Filter::Hooker - Wrap subroutines in a firewalling closure
 #
-#   $Id: Hooker.pm,v 1.2 2007-05-16 13:31:36 erwan_lemonnier Exp $
+#   $Id: Hooker.pm,v 1.3 2007-05-16 14:36:51 erwan_lemonnier Exp $
 #
 #   060302 erwan Created
 #   070516 erwan Use the rule pool
@@ -18,12 +18,17 @@ use Symbol;
 use base qw(Exporter);
 use Hook::Filter::RulePool qw(get_rule_pool);
 
-our @EXPORT = qw( get_caller_package
-		  get_caller_file
-		  get_caller_line
-		  get_caller_subname
-		  get_subname
-		  get_arguments );
+our @EXPORT = qw();
+our @EXPORT_OK = qw( get_caller_package
+		     get_caller_file
+		     get_caller_line
+		     get_caller_subname
+		     get_subname
+		     get_arguments
+		     filter_sub
+		     );
+
+
 
 use vars qw( $CALLER_PACKAGE
 	     $CALLER_FILE
@@ -32,7 +37,12 @@ use vars qw( $CALLER_PACKAGE
 	     $SUBNAME
 	     @ARGUMENTS );
 
+# singleton instance of Hook::Filter::RulePool
 my $pool = get_rule_pool();
+
+# a hash whose keys are the fully qualified names of all filtered
+# subroutines, to avoid filtering one twice
+my %subs;
 
 #----------------------------------------------------------------
 #
@@ -48,48 +58,31 @@ sub get_arguments        { return @ARGUMENTS;      };
 
 #----------------------------------------------------------------
 #
-#   new - build a new Hook::Filter::Hooker
-#
-
-sub new {
-    my $pkg = shift;
-    $pkg = ref $pkg || $pkg;
-    my $self = bless({},$pkg);
-
-    $self->{SUBS} = {};
-
-    return $self;
-}
-
-#----------------------------------------------------------------
-#
 #   filter_sub - build a filter closure wrapping calls to the provided sub
 #
 
 sub filter_sub {
-    my($self,$subname) = @_;
+    my $subname = shift;
 
-    if (!defined $subname || ref \$subname ne "SCALAR" || scalar @_ != 2) {
+    if (!defined $subname || ref \$subname ne "SCALAR" || scalar @_) {
 	shift @_;
-	croak "invalid parameter: Hook::Filter::Hooker->filter_sub expects a subroutine name, but got [".Dumper(@_)."].";
+	croak "invalid parameter: Hook::Filter::Hooker->filter_sub expects a subroutine name, but got [".Dumper($subname,@_)."].";
     }
 
     if ($subname !~ /^(.+)::([^:]+)$/) {
 	croak "invalid parameter: [$subname] is not a valid subroutine name (must include package name).";
     }
 
-    my($pkg,$func) = ($1,$2);
+    my ($pkg,$func) = ($1,$2);
 
     # check whether subroutine is already filtered, and skip if so
-    if (exists $self->{SUBS}->{$subname}) {
-	return $self;
-    }
+    return if (exists $subs{$subname});
 
     my $filtered_func = *{ qualify_to_ref($func,$pkg) }{CODE};
 
     # create the closure that will replace $func in package $pkg
     my $filter = sub {
-	my(@args) = @_;
+	my (@args) = @_;
 
 	# TODO: looking at source for Hook::WrapSub, it might be a good idea to copy/paste some of its code here, to build a valid caller stack
 	# TODO: look at Hook::LexWrap and fix so that caller() work in subroutines
@@ -121,15 +114,13 @@ sub filter_sub {
     };
 
     # keep track of already hooked subroutines
-    $self->{SUBS}->{$subname} = 1;
+    $subs{$subname} = 1;
 
     # replace $package::$func with our closure
     no strict 'refs';
     no warnings;
 
     *{ qualify_to_ref($func,$pkg) } = $filter;
-
-    return $self;
 }
 
 1;
@@ -158,17 +149,16 @@ an empty list depending on context).
 
     $hooker->filter_sub("mylog"); # mylog is assumed to be in the current package
 
-=head1 INTERFACE - METHODS
+=head1 INTERFACE
+
+Hook::Filter::Hooker exports no functions by default. But the following functions
+can be imported upon using Hook::Filter::Hooker:
 
 =over 4
 
-=item my $hooker = B<new Hook::Filter::Hooker>()
-
-Return an instance of Hook::Filter::Hooker. You normaly need to call that only once.
-
 =item $hooker->B<filter_sub>($subname)
 
-Filter the subroutine C<$subname>. I<$subname> must either be a fully qualified
+Add a filter aroun the subroutine C<$subname>. I<$subname> must either be a fully qualified
 function name, or the name of a function located in the current package.
 
 All calls to C<< $subname >> will thereafter be redirected
@@ -178,8 +168,6 @@ the original function C<< $subname >> will be called normally.
 Otherwise it will be skipped and its result spoofed.
 
 =back
-
-=head1 INTERFACE - CLASS FUNCTIONS
 
 The following class functions are to be used by modules under
 Hook::Filter::Plugins that implement specific test functions
@@ -243,7 +231,7 @@ See Hook::Filter, Hook::Filter::Rule, modules under Hook::Filter::Plugins.
 
 =head1 VERSION
 
-$Id: Hooker.pm,v 1.2 2007-05-16 13:31:36 erwan_lemonnier Exp $
+$Id: Hooker.pm,v 1.3 2007-05-16 14:36:51 erwan_lemonnier Exp $
 
 =head1 AUTHOR
 

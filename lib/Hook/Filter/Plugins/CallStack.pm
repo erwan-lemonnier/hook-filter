@@ -2,7 +2,7 @@
 #
 #   Hook::Filter::Plugin::CallStack - Functions for testing a subroutine's call stack
 #
-#   $Id: CallStack.pm,v 1.1 2007-05-16 12:34:12 erwan_lemonnier Exp $
+#   $Id: CallStack.pm,v 1.2 2007-05-16 14:36:51 erwan_lemonnier Exp $
 #
 #   060302 erwan Created
 #   070516 erwan Renamed into CallStack + added from
@@ -14,7 +14,7 @@ use strict;
 use warnings;
 use Carp qw(croak);
 use Data::Dumper;
-use Hook::Filter::Hooker;
+use Hook::Filter::Hooker qw( get_caller_subname get_caller_package get_subname );
 
 #----------------------------------------------------------------
 #
@@ -31,7 +31,7 @@ sub register {
 #
 
 sub from {
-    return get_caller_package."::".get_caller_subname;
+    return get_caller_subname;
 }
 
 #----------------------------------------------------------------
@@ -192,7 +192,7 @@ See Hook::Filter, Hook::Filter::Rule, Hook::Filter::Hooker.
 
 =head1 VERSION
 
-$Id: CallStack.pm,v 1.1 2007-05-16 12:34:12 erwan_lemonnier Exp $
+$Id: CallStack.pm,v 1.2 2007-05-16 14:36:51 erwan_lemonnier Exp $
 
 =head1 AUTHOR
 

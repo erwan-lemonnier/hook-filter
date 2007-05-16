@@ -1,6 +1,6 @@
 #################################################################
 #
-#   $Id: 13_test_from.t,v 1.1 2007-05-16 14:09:09 erwan_lemonnier Exp $
+#   $Id: 13_test_from.t,v 1.2 2007-05-16 14:36:51 erwan_lemonnier Exp $
 #
 #   test from()
 #
@@ -23,22 +23,21 @@ use lib "../lib/";
 BEGIN {
     eval "use Module::Pluggable"; plan skip_all => "Module::Pluggable required for testing Hook::Filter" if $@;
     eval "use File::Spec"; plan skip_all => "File::Spec required for testing Hook::Filter" if $@;
-    plan tests => 11;
+    plan tests => 7;
 
-    use_ok('Hook::Filter::Hooker');
+    use_ok('Hook::Filter::Hooker','filter_sub');
     use_ok('Hook::Filter::Rule');
     use_ok('Hook::Filter::RulePool','get_rule_pool');
 }
 
-my ($hook,$rule,$pool);
+my ($rule,$pool);
 $pool = get_rule_pool;
-$hook = new Hook::Filter::Hooker;
 
 sub mytest1 { return 1; };
 sub mysub1  { return mytest1(); };
 
-$hook->filter_sub('main::mytest1');
-$hook->filter_sub('MyTest1::mytest1');
+filter_sub('main::mytest1');
+filter_sub('MyTest1::mytest1');
 
 $pool->add_rule('from =~ /^MyTest1::mysub1$/');
 is(mysub1,undef,                 "main::mysub1 does not match");
