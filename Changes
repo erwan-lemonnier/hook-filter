@@ -1,0 +1,12 @@
+Revision history for Perl extension Hook::Filter
+
+0.01  2006-03-09
+	- first working version
+
+0.02  2006-05-23 
+        - adding some tests
+
+0.03  2007-05-16
+        - moved repository to sourceforge
+        - adding from() and arg() in rules
+        - updated POD
