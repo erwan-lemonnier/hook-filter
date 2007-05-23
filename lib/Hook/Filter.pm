@@ -2,7 +2,7 @@
 #
 #   Hook::Filter - A runtime filtering layer on top of subroutine calls
 #
-#   $Id: Filter.pm,v 1.5 2007-05-23 07:19:28 erwan_lemonnier Exp $
+#   $Id: Filter.pm,v 1.6 2007-05-23 08:08:26 erwan_lemonnier Exp $
 #
 #   051105 erwan Created
 #   060301 erwan Recreated
@@ -404,7 +404,18 @@ to filter a heavily used subroutine in speed requiring applications.
 
 =back
 
-=head2 USE CASE
+=head2 THREADS
+
+Hook::Filter is not thread safe.
+
+=head2 KEEP IT SIMPLE
+
+The concept of blocking/allowing subroutine calls dynamically is somewhat
+unusual and fun. Don't let yourself get too excited though. Doing that kind of
+dynamic stuff makes your code harder to understand for non-dynamic developers,
+hence reducing code stability.
+
+=head1 USE CASE
 
 Why would one need a firewall for subroutine calls?
 Here are a couple of relevant use cases:
@@ -424,17 +435,6 @@ to filter the function that logs debug messages and define tailored rules that
 allow only relevant debug messages to be logged.
 
 =back
-
-=head2 THREADS
-
-Hook::Filter is not thread safe.
-
-=head2 KEEP IT SIMPLE
-
-The concept of blocking/allowing subroutine calls dynamically is somewhat
-unusual and fun. Don't let yourself get too excited though. Doing that kind of
-dynamic stuff makes your code harder to understand for non-dynamic developers,
-hence reducing code stability.
 
 =head1 SEE ALSO
 
