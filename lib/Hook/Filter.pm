@@ -2,13 +2,14 @@
 #
 #   Hook::Filter - A runtime filtering layer on top of subroutine calls
 #
-#   $Id: Filter.pm,v 1.6 2007-05-23 08:08:26 erwan_lemonnier Exp $
+#   $Id: Filter.pm,v 1.7 2007-05-23 08:16:35 erwan_lemonnier Exp $
 #
 #   051105 erwan Created
 #   060301 erwan Recreated
 #   070516 erwan Updated POD and license, added flush_rules and add_rule
 #   070522 erwan More POD + don't use rule file unless 'rules' specified in import
 #   070523 erwan Can use 'rules' multiple time if same rule file specified
+#   070523 erwan POD updates
 #
 
 package Hook::Filter;
@@ -26,7 +27,7 @@ use Data::Dumper;
 
 our @EXPORT = qw();
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 #----------------------------------------------------------------
 #
@@ -201,12 +202,12 @@ to C<Some::Other::Module::mywarn>:
 
     use Hook::Filter hook => [ "mydebug" ,"myinfo", "Some::Other::Module::mywarn" ];
 
-Filter calls to the local subroutine C<_debug>, and import filtering
+To filter calls to the local subroutine C<_debug>, and import filtering
 rules from the file C<~/debug.rules>:
 
     use Hook::Filter hook => '_debug', rules => '~/debug.rules';
 
-Then in the file C<~/debug.rules>, write the following rules:
+The rule file C<~/debug.rules> could contain the following rules:
 
     # allow calls to 'mydebug' from within module 'My::Filthy:Attempt'
     subname eq 'mydebug' && from =~ /^My::Filthy::Attempt/
@@ -291,7 +292,7 @@ Rules can all be flushed at runtime:
 For other operations on rules, see the modules C<Hook::Filter::RulePool>
 and C<Hook::Filter::Rule>.
 
-=head2 ALLOW ALL BY DEFAULT
+=head2 PASS ALL CALLS BY DEFAULT
 
 If no rules are registered in the rule pool, or if all registered rules
 die/croak when eval-ed, the default behaviour is to allow all calls to
@@ -438,7 +439,8 @@ allow only relevant debug messages to be logged.
 
 =head1 SEE ALSO
 
-See Hook::WrapSub, Log::Localized, Log::Log4perl, Log::Dispatch.
+See Hook::Filter::Rule, Hook::Filter::RulePool, Hook::Filter::Plugins::Library, Hook::Filter::Hooker.
+See even Hook::WrapSub, Log::Localized, Log::Log4perl, Log::Dispatch.
 
 =head1 BUGS AND LIMITATIONS
 
@@ -454,7 +456,7 @@ it at https://sourceforge.net/projects/hook-filter/.
 =head1 AUTHOR
 
 Written by Erwan Lemonnier C<< <erwan@cpan.org> >> based on inspiration
-received during the 2005 perl Nordic Workshops. Kind thanks to Claes Jacobsson &
+received during the 2005 Nordic Perl Workshop. Kind thanks to Claes Jakobsson &
 Jerker Montelius for their suggestions and support!
 
 =head1 LICENSE
