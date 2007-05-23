@@ -2,7 +2,7 @@
 #
 #   Hook::Filter::Rule - A filter rule
 #
-#   $Id: Rule.pm,v 1.4 2007-05-23 08:26:15 erwan_lemonnier Exp $
+#   $Id: Rule.pm,v 1.5 2007-05-23 08:30:59 erwan_lemonnier Exp $
 #
 #   060301 erwan Created
 #   070516 erwan Small POD and layout fixes
@@ -17,6 +17,8 @@ use Carp qw(croak);
 use Data::Dumper;
 use Symbol;
 use Module::Pluggable search_path => ['Hook::Filter::Plugins'], require => 1;
+
+our $VERSION='0.02';
 
 #----------------------------------------------------------------
 #
@@ -190,7 +192,7 @@ See Hook::Filter, Hook::Filter::RulePool, Hook::Filter::Hooker, Hook::Filter::Pl
 
 =head1 VERSION
 
-$Id: Rule.pm,v 1.4 2007-05-23 08:26:15 erwan_lemonnier Exp $
+$Id: Rule.pm,v 1.5 2007-05-23 08:30:59 erwan_lemonnier Exp $
 
 =head1 AUTHOR
 
