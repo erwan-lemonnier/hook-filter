@@ -2,7 +2,7 @@
 #
 #   Hook::Filter::Hooker - Wrap subroutines in a firewalling closure
 #
-#   $Id: Hooker.pm,v 1.5 2007-05-23 08:26:15 erwan_lemonnier Exp $
+#   $Id: Hooker.pm,v 1.6 2007-05-23 08:32:58 erwan_lemonnier Exp $
 #
 #   060302 erwan Created
 #   070516 erwan Use the rule pool
@@ -156,7 +156,7 @@ can be explicitly imported upon using C<Hook::Filter::Hooker>:
 
 =over 4
 
-=item C<< $hooker->filter_sub($subname)>>
+=item C<< $hooker->filter_sub($subname) >>
 
 Add a filter around the subroutine C<$subname>. I<$subname> must either be a fully qualified
 function name, or the name of a function located in the current package.
@@ -229,7 +229,7 @@ See Hook::Filter, Hook::Filter::Rule, Hook::Filter::RulePool, Hook::Filter::Plug
 
 =head1 VERSION
 
-$Id: Hooker.pm,v 1.5 2007-05-23 08:26:15 erwan_lemonnier Exp $
+$Id: Hooker.pm,v 1.6 2007-05-23 08:32:58 erwan_lemonnier Exp $
 
 =head1 AUTHOR
 
