@@ -2,7 +2,7 @@
 #
 #   Hook::Filter::Hooker - Wrap subroutines in a firewalling closure
 #
-#   $Id: Hooker.pm,v 1.7 2007-05-24 14:52:37 erwan_lemonnier Exp $
+#   $Id: Hooker.pm,v 1.8 2007-05-24 14:58:09 erwan_lemonnier Exp $
 #
 #   060302 erwan Created
 #   070516 erwan Use the rule pool
@@ -74,8 +74,6 @@ sub filter_sub {
     }
 
     my ($pkg,$func) = ($1,$2);
-
-    print "hijacking $pkg :: $func\n";
 
     # check whether subroutine is already filtered, and skip if so
     return if (exists $subs{$subname});
@@ -231,7 +229,7 @@ See Hook::Filter, Hook::Filter::Rule, Hook::Filter::RulePool, Hook::Filter::Plug
 
 =head1 VERSION
 
-$Id: Hooker.pm,v 1.7 2007-05-24 14:52:37 erwan_lemonnier Exp $
+$Id: Hooker.pm,v 1.8 2007-05-24 14:58:09 erwan_lemonnier Exp $
 
 =head1 AUTHOR
 
