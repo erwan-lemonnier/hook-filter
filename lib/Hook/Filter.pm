@@ -2,7 +2,7 @@
 #
 #   Hook::Filter - A runtime filtering layer on top of subroutine calls
 #
-#   $Id: Filter.pm,v 1.8 2007-05-24 14:52:37 erwan_lemonnier Exp $
+#   $Id: Filter.pm,v 1.9 2007-05-25 11:49:25 erwan_lemonnier Exp $
 #
 #   051105 erwan Created
 #   060301 erwan Recreated
@@ -55,6 +55,8 @@ sub _queue_sub {
 sub import {
     my($class,%args) = @_;
     my $pkg = caller(0);
+
+    print "import called from $pkg\n";
 
     #
     # check parameter 'rules', indicating path to the rule file
@@ -131,12 +133,30 @@ sub import {
 # when all is compiled, do filter all the subs
 #
 
-# we need that to avoid 'Too late to run INIT' errors if Hook::Filter is compiled from an eval/require
-no warnings 'void';
+# if Hook::Filter is loaded via eval/require, we will get a 'Too late to run INIT block' warning
+# and the INIT won't be executed. let's catch this warning:
 
-INIT {
-    # add a filtering closure around each sub
-    map { filter_sub($_) } keys %HOOK_SUBS;
+BEGIN {
+    $SIG{__WARN__} = sub {
+	my $msg = shift;
+	print "got warning: $msg\n";
+	if ($msg =~ /^Too late to run INIT block.*Hook.Filter/) {
+	    print "running filter_subs from warn\n";
+	    print "hook_subs is: ".Dumper(%HOOK_SUBS);
+
+	    map { filter_sub($_) } keys %HOOK_SUBS;
+	    return;
+	}
+	CORE::warn $msg;
+    };
+}
+
+{
+
+    INIT {
+	# add a filtering closure around each sub
+	map { filter_sub($_) } keys %HOOK_SUBS;
+    }
 }
 
 1;
