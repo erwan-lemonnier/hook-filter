@@ -11,4 +11,3 @@ make distdir
 make disttest
 make tardist
 make clean
-rm MANIFEST
