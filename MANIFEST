@@ -5,6 +5,7 @@ lib/Hook/Filter/Hooker.pm
 lib/Hook/Filter/Plugins/Library.pm
 lib/Hook/Filter/Rule.pm
 lib/Hook/Filter/RulePool.pm
+LICENSE
 Makefile.PL
 MANIFEST
 META.yml
